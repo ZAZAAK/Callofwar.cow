@@ -71,6 +71,10 @@
         .play-button:hover {
             background-color: #218838;
         }
+
+        .g-signin2 {
+            margin-top: 2rem;
+        }
     </style>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -81,29 +85,24 @@
             <div class="progress" id="progress"></div>
         </div>
         <div class="loading-text" id="loading-text">0%</div>
-        <button class="play-button" id="play-button" onclick="startGoogleLogin()">Play</button>
-        <div id="g_id_onload"
-             data-client_id="975547063298-odqda6l8gtnpn5nf021thp90d832a1vb.apps.googleusercontent.com"
-             data-context="signin"
-             data-ux_mode="popup"
-             data-callback="handleCredentialResponse"
-             style="display: none;">
-        </div>
-        <div id="g_id_signin" style="display: none;"></div>
+        <div id="g-signin-container" class="g-signin2" data-width="300" data-height="50" data-longtitle="true"></div>
+        <button class="play-button" id="play-button" onclick="startGame()">Play</button>
     </div>
 
     <script>
         const progressBar = document.getElementById('progress');
         const loadingText = document.getElementById('loading-text');
         const playButton = document.getElementById('play-button');
+        const gSignInContainer = document.getElementById('g-signin-container');
 
         let progress = 0;
 
+        // Simulate loading progress
         const loadingInterval = setInterval(() => {
             if (progress >= 100) {
                 clearInterval(loadingInterval);
                 loadingText.textContent = 'Game Loaded!';
-                playButton.style.display = 'block';
+                gSignInContainer.style.display = 'block';
             } else {
                 progress += 2;
                 progressBar.style.width = `${progress}%`;
@@ -111,13 +110,31 @@
             }
         }, 100);
 
-        function startGoogleLogin() {
-            document.getElementById('g_id_signin').style.display = 'block';
+        // Google Login Initialization
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "975547063298-odqda6l8gtnpn5nf021thp90d832a1vb.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                document.getElementById('g-signin-container'),
+                { theme: "outline", size: "large" }
+            );
+            google.accounts.id.prompt(); // Automatically prompt for sign-in
+        };
+
+        // Handle Google Login
+        function handleCredentialResponse(response) {
+            console.log('Encoded JWT ID token: ' + response.credential);
+            // On successful login, hide Google sign-in and show Play button
+            gSignInContainer.style.display = 'none';
+            playButton.style.display = 'block';
         }
 
-        function handleCredentialResponse(response) {
-            console.log("Encoded JWT ID token: " + response.credential);
-            alert('Login Successful!');
+        // Start the game
+        function startGame() {
+            alert('Game is starting...');
+            // Add your game launch code here
         }
     </script>
 </body>
