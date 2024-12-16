@@ -72,6 +72,7 @@
             background-color: #218838;
         }
     </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <div class="loading-container">
@@ -80,7 +81,15 @@
             <div class="progress" id="progress"></div>
         </div>
         <div class="loading-text" id="loading-text">0%</div>
-        <button class="play-button" id="play-button" onclick="googleLogin()">Play</button>
+        <button class="play-button" id="play-button" onclick="startGoogleLogin()">Play</button>
+        <div id="g_id_onload"
+             data-client_id="975547063298-odqda6l8gtnpn5nf021thp90d832a1vb.apps.googleusercontent.com"
+             data-context="signin"
+             data-ux_mode="popup"
+             data-callback="handleCredentialResponse"
+             style="display: none;">
+        </div>
+        <div id="g_id_signin" style="display: none;"></div>
     </div>
 
     <script>
@@ -102,9 +111,13 @@
             }
         }, 100);
 
-        function googleLogin() {
-            // Implement Google login functionality here
-            alert('Redirecting to Google Login...');
+        function startGoogleLogin() {
+            document.getElementById('g_id_signin').style.display = 'block';
+        }
+
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            alert('Login Successful!');
         }
     </script>
 </body>
